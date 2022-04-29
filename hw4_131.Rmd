@@ -22,7 +22,7 @@ tidymodels_prefer()
 
 ## Question 1
 
-```{r cars}
+```{r}
 titanic <- read.csv("~/Downloads/homework-4/data/titanic.csv")
 titanic$survived <- factor(titanic$survived,levels=c('Yes', 'No'))
 titanic$pclass <- factor(titanic$pclass)
@@ -33,12 +33,10 @@ titanic_train <- training(titanic_split)
 titanic_test <- testing(titanic_split)
 ```
 
-## Including Plots
+## Question 2 
 
-You can also embed plots, for example:
+```{r}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
