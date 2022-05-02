@@ -383,7 +383,7 @@ pre code {
 ## x dplyr::filter()  masks stats::filter()
 ## x dplyr::lag()     masks stats::lag()
 ## x recipes::step()  masks stats::step()
-## • Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+## • Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 <pre class="r"><code>library(ISLR) 
 library(ISLR2) </code></pre>
 <pre><code>## 
@@ -413,19 +413,63 @@ library(klaR) # for naive bayes</code></pre>
 <div id="question-1" class="section level2">
 <h2>Question 1</h2>
 <pre class="r"><code>titanic &lt;- read.csv(&quot;~/Downloads/homework-4/data/titanic.csv&quot;)
+
 titanic$survived &lt;- factor(titanic$survived,levels=c(&#39;Yes&#39;, &#39;No&#39;))
 titanic$pclass &lt;- factor(titanic$pclass)
+
 set.seed(2424)
+
 titanic_split &lt;- initial_split(titanic, prop = 0.80,
                                 strata = survived)
+
 titanic_train &lt;- training(titanic_split) 
+
 titanic_test &lt;- testing(titanic_split)</code></pre>
 </div>
 <div id="question-2" class="section level2">
 <h2>Question 2</h2>
-<pre class="r"><code>#fjeiofwif
-# meow 
-#meow</code></pre>
+<pre class="r"><code>titanic_recipe &lt;- 
+  recipe(survived ~ ., data = titanic_train%&gt;%select(survived, sex, age, sib_sp, pclass, fare, parch)) %&gt;% 
+  step_impute_linear(age) %&gt;%
+  step_dummy(all_nominal_predictors()) %&gt;%
+  step_interact(terms = ~ starts_with(&quot;sex&quot;):fare + age:fare) %&gt;%
+  step_center(all_predictors()) %&gt;%
+  step_scale(all_predictors())
+
+lm_spec &lt;- linear_reg() %&gt;%
+  set_mode(&quot;regression&quot;) %&gt;%
+  set_engine(&quot;lm&quot;)
+
+poly_rec &lt;- recipe(survived ~ ., data = titanic_train%&gt;%select(survived, sex, age, sib_sp, pclass, fare, parch)) %&gt;%
+  step_poly(., degree = 2)
+
+poly_wf &lt;- workflow() %&gt;%
+  add_recipe(poly_rec) %&gt;%
+  add_model(lm_spec)
+
+poly_tuned_rec &lt;- recipe(survived ~ ., data = titanic_train%&gt;%select(survived, sex, age, sib_sp, pclass, fare, parch)) %&gt;%
+  step_poly(., degree = tune())
+
+poly_tuned_wf &lt;- workflow() %&gt;%
+  add_recipe(poly_tuned_rec) %&gt;%
+  add_model(lm_spec)
+
+titanic_folds &lt;- vfold_cv(titanic_train, v = 10)
+titanic_folds</code></pre>
+<pre><code>## #  10-fold cross-validation 
+## # A tibble: 10 × 2
+##    splits           id    
+##    &lt;list&gt;           &lt;chr&gt; 
+##  1 &lt;split [640/72]&gt; Fold01
+##  2 &lt;split [640/72]&gt; Fold02
+##  3 &lt;split [641/71]&gt; Fold03
+##  4 &lt;split [641/71]&gt; Fold04
+##  5 &lt;split [641/71]&gt; Fold05
+##  6 &lt;split [641/71]&gt; Fold06
+##  7 &lt;split [641/71]&gt; Fold07
+##  8 &lt;split [641/71]&gt; Fold08
+##  9 &lt;split [641/71]&gt; Fold09
+## 10 &lt;split [641/71]&gt; Fold10</code></pre>
 </div>
 
 

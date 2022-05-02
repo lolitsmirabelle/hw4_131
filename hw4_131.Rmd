@@ -24,21 +24,52 @@ tidymodels_prefer()
 
 ```{r}
 titanic <- read.csv("~/Downloads/homework-4/data/titanic.csv")
+
 titanic$survived <- factor(titanic$survived,levels=c('Yes', 'No'))
 titanic$pclass <- factor(titanic$pclass)
+
 set.seed(2424)
+
 titanic_split <- initial_split(titanic, prop = 0.80,
                                 strata = survived)
+
 titanic_train <- training(titanic_split) 
+
 titanic_test <- testing(titanic_split)
 ```
 
 ## Question 2 
 
 ```{r}
-#fjeiofwif
-# meow 
-#meow
+titanic_recipe <- 
+  recipe(survived ~ ., data = titanic_train%>%select(survived, sex, age, sib_sp, pclass, fare, parch)) %>% 
+  step_impute_linear(age) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_interact(terms = ~ starts_with("sex"):fare + age:fare) %>%
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors())
+
+lm_spec <- linear_reg() %>%
+  set_mode("regression") %>%
+  set_engine("lm")
+
+poly_rec <- recipe(survived ~ ., data = titanic_train%>%select(survived, sex, age, sib_sp, pclass, fare, parch)) %>%
+  step_poly(., degree = 2)
+
+poly_wf <- workflow() %>%
+  add_recipe(poly_rec) %>%
+  add_model(lm_spec)
+
+poly_tuned_rec <- recipe(survived ~ ., data = titanic_train%>%select(survived, sex, age, sib_sp, pclass, fare, parch)) %>%
+  step_poly(., degree = tune())
+
+poly_tuned_wf <- workflow() %>%
+  add_recipe(poly_tuned_rec) %>%
+  add_model(lm_spec)
+
+titanic_folds <- vfold_cv(titanic_train, v = 10)
+titanic_folds
+
 ```
 
 
