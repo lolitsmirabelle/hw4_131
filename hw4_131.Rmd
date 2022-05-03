@@ -38,6 +38,7 @@ titanic_train <- training(titanic_split)
 titanic_test <- testing(titanic_split)
 ```
 
+
 ## Question 2 
 
 ```{r}
@@ -73,3 +74,72 @@ titanic_folds
 ```
 
 
+## Question 3 
+In question 2, k-fold cross validation is also known as hyperparameter tuning and involves randomly k-fold CV dividing the set of observations into k groups, or folds, of approximately equal size. The first fold is treated as a validation set, and the method is fit on the remaining k − 1 folds. We should use 
+
+## Question 4 
+```{r}
+# logistic regression model
+log_reg <- logistic_reg() %>% 
+  set_engine("glm") %>% 
+  set_mode("classification")
+
+log_wkflow <- workflow() %>% 
+  add_model(log_reg) %>% 
+  add_recipe(titanic_recipe)
+
+# lda model
+lda_mod <- discrim_linear() %>% 
+  set_mode("classification") %>% 
+  set_engine("MASS")
+
+lda_wkflow <- workflow() %>% 
+  add_model(lda_mod) %>% 
+  add_recipe(titanic_recipe)
+
+# qda model 
+qda_mod <- discrim_quad() %>% 
+  set_mode("classification") %>% 
+  set_engine("MASS")
+
+qda_wkflow <- workflow() %>% 
+  add_model(qda_mod) %>% 
+  add_recipe(titanic_recipe)
+```
+
+
+## Question 5
+```{r, eval = FALSE}
+log_fit_rs <- log_wkflow %>% fit_resamples(titanic_folds)
+lda_fit_rs <- lda_wkflow %>% fit_resamples(titanic_folds)
+qda_fit_rs <- qda_wkflow %>% fit_resamples(titanic_folds)
+```
+
+```{r,include=FALSE}
+load("model_fits.rda")
+```
+
+
+## Question 6 
+```{r}
+collect_metrics(log_fit_rs)
+collect_metrics(lda_fit_rs)
+collect_metrics(qda_fit_rs)
+```
+From the above, we see that logistic regression yields the best result. This is because it is easier to implement, interpret, and very efficient to train. If the number of observations is lesser than the number of features, Logistic Regression should not be used, otherwise, it may lead to overfitting. It makes no assumptions about distributions of classes in feature space.
+
+## Question 7
+```{r}
+best_model_fit <- log_wkflow %>% fit(titanic_train)
+```
+
+
+## Question 8
+```{r}
+log_test_acc <- predict(best_model_fit, new_data = titanic_test)%>%
+  bind_cols(titanic_test%>%dplyr::select(survived))%>%
+  accuracy(truth = survived, estimate = .pred_class)
+log_test_acc
+```
+
+From the above, we observe that the accuracy on the testing data is higher than the accuracy on the folds. 
