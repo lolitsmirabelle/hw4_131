@@ -383,7 +383,7 @@ pre code {
 ## x dplyr::filter()  masks stats::filter()
 ## x dplyr::lag()     masks stats::lag()
 ## x recipes::step()  masks stats::step()
-## • Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+## • Learn how to get started at https://www.tidymodels.org/start/</code></pre>
 <pre class="r"><code>library(ISLR) 
 library(ISLR2) </code></pre>
 <pre><code>## 
@@ -477,7 +477,9 @@ titanic_folds</code></pre>
 hyperparameter tuning and involves randomly k-fold CV dividing the set
 of observations into k groups, or folds, of approximately equal size.
 The first fold is treated as a validation set, and the method is fit on
-the remaining k − 1 folds. We should use</p>
+the remaining k − 1 folds. We should use this metric because it takes
+into account the models performance across the entire data set. Training
+on the entire training set would be 2-fold cross validation.</p>
 </div>
 <div id="question-4" class="section level2">
 <h2>Question 4</h2>

@@ -75,7 +75,7 @@ titanic_folds
 
 
 ## Question 3 
-In question 2, k-fold cross validation is also known as hyperparameter tuning and involves randomly k-fold CV dividing the set of observations into k groups, or folds, of approximately equal size. The first fold is treated as a validation set, and the method is fit on the remaining k − 1 folds. We should use 
+In question 2, k-fold cross validation is also known as hyperparameter tuning and involves randomly k-fold CV dividing the set of observations into k groups, or folds, of approximately equal size. The first fold is treated as a validation set, and the method is fit on the remaining k − 1 folds. We should use this metric because it takes into account the models performance across the entire data set. Training on the entire training set would be 2-fold cross validation.
 
 ## Question 4 
 ```{r}
