@@ -106,6 +106,7 @@ qda_wkflow <- workflow() %>%
   add_model(qda_mod) %>% 
   add_recipe(titanic_recipe)
 ```
+The total amount of folds is 30.
 
 
 ## Question 5

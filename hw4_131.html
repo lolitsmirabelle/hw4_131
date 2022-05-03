@@ -383,7 +383,7 @@ pre code {
 ## x dplyr::filter()  masks stats::filter()
 ## x dplyr::lag()     masks stats::lag()
 ## x recipes::step()  masks stats::step()
-## • Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+## • Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
 <pre class="r"><code>library(ISLR) 
 library(ISLR2) </code></pre>
 <pre><code>## 
@@ -509,6 +509,7 @@ qda_mod &lt;- discrim_quad() %&gt;%
 qda_wkflow &lt;- workflow() %&gt;% 
   add_model(qda_mod) %&gt;% 
   add_recipe(titanic_recipe)</code></pre>
+<p>The total amount of folds is 30.</p>
 </div>
 <div id="question-5" class="section level2">
 <h2>Question 5</h2>
